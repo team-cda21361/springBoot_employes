@@ -11,7 +11,7 @@
 	
 	<div class="container">
 	
-	<!-- Affichage du get -- show employe -->
+	<!-- Affichage du get -- show employe --
 	<span th:text="${amis.nom}"></span>
 	<hr>
 	<span th:text="${amis.prenom}"></span>
@@ -20,7 +20,7 @@
 	<!-- Fin Affichage du get -- show employe -->
 	
 	<!-- Liste des employes -->
-	<table class="table" th:if="${employes} != null">
+	<table class="table" th:if="${employe} != null">
         <thead>
         <tr>
             <th scope="col">Nom</th>
@@ -35,7 +35,16 @@
             <td th:text="${employe.nom}"></td>
             <td th:text="${employe.prenom}"></td>
             <td th:text="${employe.email}"></td>
-            <td><a th:href="@{/show/{id} (id=${employe.id})}">Show</a></td>
+            <td><a th:href="@{/show/{id} (id=${employe.id})}">
+            	<button type="button"  class="btn btn-warning" >Show</button>
+            	</a></td>
+            <!-- Delete  employe -->
+            <td>
+				<a th:href="@{/update}">
+					<button type="button"  class="btn btn-danger" >Danger</button>	
+				</a>
+			</td>
+		
             <!-- 
             <td><a th:href="'/update/' + ${etudiant.id}"><i class="bi bi-clipboard"></i></a></td>
             <td><a th:href="'/delete/' + ${etudiant.id}"><i class="bi bi-trash"></i></a></td>
@@ -47,31 +56,35 @@
 	<!-- Fin Liste des employes -->
 	
 	
+	<!-- Liste vide  -->
+	<div th:unless="${employe}" th:text="'La liste est vide'"></div>
+	
+	<!-- Fin Liste des employes -->
+	
+	
 	<!-- Ajout employe -->
 	<form method="post" th:object="${employes}">
 	  <div class="mb-3">
 	    <label for="exampleInputEmail1" class="form-label">Saisir nom</label>
 	    <input type="text" class="form-control" id="nom" th:field="*{nom}"/>
 	    <!-- Message d'erreur -->
-	   <span th:if="${#fields.hasErrors('email')}" th:errors="*{nom}"></span>
+	    	<div class="alert alert-danger"  th:if="${#fields.hasErrors('nom')}" th:errors="*{nom}"></div>
 	  </div>
 	  <div class="mb-3">
 	    <label for="exampleInputEmail1" class="form-label">Saisir prénom</label>
 	    <input type="text" class="form-control" id="nom" th:field="*{prenom}"/>
 	   
-	    <span th:if="${#fields.hasErrors('email')}" th:errors="*{prenom}"></span>
+	    	<div class="alert alert-danger"  th:if="${#fields.hasErrors('prenom')}" th:errors="*{prenom}"></div>
 	  </div>
 	  <div class="mb-3">
 	    <label for="exampleInputEmail1" class="form-label">Email address</label>
 	    <input type="email" class="form-control" id="nom" th:field="*{email}"/>
 	    
-	    <div class="alert alert-danger">
-	    	<span th:if="${#fields.hasErrors('email')}" th:errors="${employes.email}"></span>
-	    </div>
+	    	<div class="alert alert-danger" th:if="${#fields.hasErrors('email')}" th:errors="${employes.email}"></div>
 	    
 	  </div>
 	  
-	  <button type="submit" class="btn btn-primary">Submit</button>
+	  <button type="submit" class="btn btn-primary">Ajouter à la liste</button>
 	</form>
 	<!-- Fin ajout  employe -->
 	

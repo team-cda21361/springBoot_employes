@@ -1,6 +1,7 @@
 package fr.spear.employes.service;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -24,4 +25,10 @@ public class EmployesService {
 		return employesRepository.findAll();
 	}
 	
+	
+	//SHow 
+	public Optional<Employes> getEmployeIfExist(int id) {
+		return employesRepository.findById(id);
+		
+	}
 }
