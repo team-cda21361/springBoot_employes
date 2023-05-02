@@ -7,6 +7,7 @@ import javax.management.AttributeNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -22,7 +23,7 @@ public class ShowEmployeController {
 	private EmployesService empService;
 
 	@GetMapping("/show/{id}")
-	public String show(@PathVariable("id") int id, Model model, Employes employes) {
+	public String show(@PathVariable("id") Long id, Model model, Employes employes) {
 		Optional<Employes> getEmployeFounded = empService.getEmployeIfExist(id);
 	        
         if(getEmployeFounded.isPresent()) {
@@ -33,7 +34,7 @@ public class ShowEmployeController {
 	}
 	
 	@PostMapping("/show/{id}")
-    public String update(@PathVariable(value = "id") int id, @Validated Employes employeDetails) throws AttributeNotFoundException {
+    public String update(@PathVariable(value = "id") Long id, @Validated Employes employeDetails, BindingResult bindingResult) throws AttributeNotFoundException {
 		/*
         * La ligne ci-dessous joue un role essentiel. 
         * Il check si l'id, il le reoturne dans la variable sinon il léve une exception
@@ -45,7 +46,7 @@ public class ShowEmployeController {
 		employe.setPrenom(employeDetails.getPrenom());
 		employe.setEmail(employeDetails.getEmail());
         
-		empService.ajoutEmployes(employe);
+		empService.ajoutEmployes(employe, bindingResult);
         
         return "redirect:/";
     }

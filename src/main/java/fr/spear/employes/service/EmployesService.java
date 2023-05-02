@@ -5,6 +5,8 @@ import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.FieldError;
 
 import fr.spear.employes.bean.Employes;
 import fr.spear.employes.repository.EmployesRepository;
@@ -16,8 +18,17 @@ public class EmployesService {
 	private EmployesRepository employesRepository;
 	
 	//Ajout d'un employe
-	public void ajoutEmployes(Employes employes) {
-		employesRepository.save(employes);
+	public Employes ajoutEmployes(Employes employes, BindingResult bindingResult) {
+		//Check si le mail existe
+		if(employesRepository.findByEmail(employes.getEmail()) != null) {
+			employes  = employesRepository.findByEmail(employes.getEmail());
+			
+	    	bindingResult.addError(new FieldError("employes","email","Le mail ("+employes.getEmail()+") existe deja coco...."));
+			
+		}else {			
+			 employesRepository.save(employes);
+		}
+		return employes;
 	}
 	
 	//Listing des employes
@@ -27,8 +38,22 @@ public class EmployesService {
 	
 	
 	//SHow 
-	public Optional<Employes> getEmployeIfExist(int id) {
-		return employesRepository.findById(id);
+	public Optional<Employes> getEmployeIfExist(Long id) {
 		
+		return employesRepository.findById(Integer.parseInt(String.valueOf(id)));
+		
+	}
+	
+	//DELETE
+	public boolean deleteEmploye(int id) {
+		Optional<Employes> employe =employesRepository.findById(id);
+		
+		if(employe.isPresent()) {
+			
+			employesRepository.delete(employe.get());
+			System.out.println("deleted " );
+			return true;
+		}
+		return false;
 	}
 }
