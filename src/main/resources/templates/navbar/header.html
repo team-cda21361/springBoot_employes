@@ -27,10 +27,18 @@
           <a class="nav-link disabled">Disabled</a>
         </li>
       </ul>
-      <form class="d-flex" role="search">
-        <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
-        <button class="btn btn-outline-success" type="submit">Search</button>
-      </form>
+       <div sec:authorize="isAuthenticated()"> 
+		<span th:text="${#authentication.getPrincipal().getFullName()}" > </span>
+		
+		    <a class="btn btn-danger" th:href="@{/logout}">logout</a>
+		  </div> 
+		  
+		  <div sec:authorize="isAnonymous()"> 
+		    <a class="btn btn-success" th:href="@{/login}">Se connecter </a>
+		    <a class="btn btn-primary" th:href="@{/register}">S'inscrire</a>  
+		  </div>
     </div>
   </div>
+
 </nav>
+
