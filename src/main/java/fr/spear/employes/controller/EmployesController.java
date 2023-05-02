@@ -37,18 +37,18 @@ public class EmployesController {
 	}
 	
 	@PostMapping("/")
-	public String employes(@Validated Employes employes, BindingResult bindingResult, Model model) {
+	public String employes(@Validated Employes employes, BindingResult bindingResult, Model model, @RequestParam("id") Optional<Long> id) {
 		if(bindingResult.hasErrors()) {
 			
 			getEmployeesList(model);
 			return "employes";
-		}else if(employesService.ajoutEmployes(employes, bindingResult) != null) {
+		}else if(employesService.ajoutEmployes(employes, bindingResult, id) != null) {
 			
 			
 	    	getEmployeesList(model);
 	    	return "employes";
 		}else {
-			employesService.ajoutEmployes(employes, bindingResult);
+			employesService.ajoutEmployes(employes, bindingResult, id);
 			model.addAttribute("msg",employes);
 
 			return "employes";

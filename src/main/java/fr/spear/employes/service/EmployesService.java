@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import fr.spear.employes.bean.Employes;
 import fr.spear.employes.repository.EmployesRepository;
@@ -18,9 +19,14 @@ public class EmployesService {
 	private EmployesRepository employesRepository;
 	
 	//Ajout d'un employe
-	public Employes ajoutEmployes(Employes employes, BindingResult bindingResult) {
+	public Employes ajoutEmployes(Employes employes, BindingResult bindingResult, @RequestParam("id") Optional<Long> id) {
 		//Check si le mail existe
-		if(employesRepository.findByEmail(employes.getEmail()) != null) {
+		if( id.isPresent()){
+			System.out.println("pOST --   " + id);
+		
+			employesRepository.save(employes);
+			
+		}else if(employesRepository.findByEmail(employes.getEmail()) != null) {
 			employes  = employesRepository.findByEmail(employes.getEmail());
 			
 	    	bindingResult.addError(new FieldError("employes","email","Le mail ("+employes.getEmail()+") existe deja coco...."));
