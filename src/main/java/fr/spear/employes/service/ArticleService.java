@@ -1,6 +1,7 @@
 package fr.spear.employes.service;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -20,5 +21,9 @@ public class ArticleService {
 	
 	public List<Article> getArticles(){
 		return articleRepo.findAll();
+	}
+	
+	public Optional<Article> getArticle(int id) {
+		return articleRepo.findById(id);
 	}
 }

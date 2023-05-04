@@ -23,7 +23,7 @@ public class RegisterController {
 	
 	@GetMapping("/register")
 	public String register(User user, Model model) {
-		
+		System.out.println(repo.findAll());
 		model.addAttribute("roles", repo.findAll());
 		
 		return "user/register";

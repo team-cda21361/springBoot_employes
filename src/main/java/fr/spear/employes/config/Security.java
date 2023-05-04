@@ -36,7 +36,7 @@ public class Security {
 	
 	http
 		.authorizeHttpRequests()
-		.requestMatchers("/login","/register").permitAll()
+		.requestMatchers("/login","/register","/list","/showArticle/**").permitAll()
 		.anyRequest().authenticated()
 		.and()
 		.formLogin()

@@ -19,7 +19,7 @@ public class Article {
 	private String titre;
 
 	@NotBlank(message = "Le résumé est vide")
-	@Size(min=20, max=30, message="Le résumé est trop court")
+	@Size(min=5, max=30, message="Le résumé est trop court")
 	private String resume;
 	
 	@NotBlank

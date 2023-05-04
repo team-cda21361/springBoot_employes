@@ -21,6 +21,10 @@ public class UserService {
 		userRepo.save(user);
 		return true;
 	}
+	
+	public User getUserByEmail(String mail) {
+		return userRepo.findByEmail(mail);
+	}
 }
 
 
