@@ -9,7 +9,7 @@ import fr.spear.employes.bean.User;
 import fr.spear.employes.bean.UserLogin;
 import fr.spear.employes.repository.UserRepo;
 
-public class UserLoginDetailsService implements UserDetailsService{
+public class UserLoginDetailsService implements UserDetailsService {
 
 	@Autowired
 	private UserRepo userRepo;

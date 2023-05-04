@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity6">
 <head>
 <meta charset="UTF-8">
 <title>Insert title here</title>
@@ -12,6 +12,14 @@
 	<header th:insert="~{navbar/header::nav}"></header>
 	
 	<div class="container">
+	
+	    
+  Authenticated username: <div sec:authentication="name"></div>
+
+<div sec:authorize="isAuthenticated()">You are successfully authenticated</div>
+
+<div sec:authorize="hasRole('MEMBRE')">Je suis MEMBRE</div>
+<div sec:authorize="hasAuthority('ADMIN')">Je suis un ADMIN</div>
 	
 	<!-- Affichage du get -- show employe --
 	<span th:text="${amis.nom}"></span>
@@ -104,7 +112,7 @@
 	
 	
 	<!-- Ajout employe -->
-	<form method="post" th:object="${employes}">
+	<form method="post" th:object="${employes}" th:action="@{/add}">
 	  <div class="mb-3">
 	    <label for="exampleInputEmail1" class="form-label">Saisir nom</label>
 	    <input type="text" class="form-control" id="nom" th:field="*{nom}"/>

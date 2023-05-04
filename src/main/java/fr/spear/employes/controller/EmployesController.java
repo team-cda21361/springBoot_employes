@@ -21,7 +21,7 @@ public class EmployesController {
 	@Autowired
 	private EmployesService employesService;
 	
-	@GetMapping("/")
+	@GetMapping("/add")
 	public String getList(Employes eee,  @RequestParam(value = "id", required = false) Long id,Model model) {
 //		public String getList(Model model, Employes employes) {
 		
@@ -36,15 +36,13 @@ public class EmployesController {
 		return "employes";
 	}
 	
-	@PostMapping("/")
+	@PostMapping("/add")
 	public String employes(@Validated Employes employes, BindingResult bindingResult, Model model, @RequestParam("id") Optional<Long> id) {
 		if(bindingResult.hasErrors()) {
 			
 			getEmployeesList(model);
 			return "employes";
 		}else if(employesService.ajoutEmployes(employes, bindingResult, id) != null) {
-			
-			
 	    	getEmployeesList(model);
 	    	return "employes";
 		}else {

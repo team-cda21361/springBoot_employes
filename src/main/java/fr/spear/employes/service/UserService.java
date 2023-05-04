@@ -9,15 +9,25 @@ import fr.spear.employes.repository.UserRepo;
 
 @Service
 public class UserService {
+
 	@Autowired
-	private UserRepo userRepo;
+	UserRepo userRepo;
+	
 	
 	public boolean ajoutUser(User user) {
 		BCryptPasswordEncoder encoder = 	new  BCryptPasswordEncoder();
     	user.setPassword(encoder.encode(user.getPassword()));
 
 		userRepo.save(user);
-		
 		return true;
 	}
 }
+
+
+
+
+
+
+
+
+

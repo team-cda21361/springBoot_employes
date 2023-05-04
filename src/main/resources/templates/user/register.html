@@ -40,6 +40,14 @@
 	    	<div class="alert alert-danger" th:if="${#fields.hasErrors('password')}" th:errors="*{password}"></div>
 	    
 	  </div>
+	  <div class="mb-3">
+	    <label for="exampleInputEmail1" class="form-label">Role</label>
+	    <select multiple class="form-select" aria-label="Default select example" th:field="*{roles}">
+		  <option th:each="role:${roles}" th:text="${role.name}" th:value="${role.id}"></option>
+		</select>
+	  </div>
+	  
+	  
 	  
 	  <button type="submit" class="btn btn-primary">Ajouter à la liste</button>
 	</form>

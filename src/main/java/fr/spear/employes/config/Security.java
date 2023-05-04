@@ -13,50 +13,42 @@ import fr.spear.employes.service.UserLoginDetailsService;
 
 @Configuration
 public class Security {
-
 	@Bean
     public UserDetailsService userDetailsService() {
         return new UserLoginDetailsService();
     }
-	
-	@Bean
-    public DaoAuthenticationProvider authenticationProvider() {
-        DaoAuthenticationProvider authProvider = new DaoAuthenticationProvider();
-        authProvider.setUserDetailsService(userDetailsService());
-        authProvider.setPasswordEncoder(passwordEncoder()); 
-        return authProvider;
-    }
-
 
 	@Bean
     public BCryptPasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
-
- 
+	
+	@Bean
+	public DaoAuthenticationProvider authenticationProvider() {
+	    DaoAuthenticationProvider authProvider = new DaoAuthenticationProvider();
+	    authProvider.setUserDetailsService(userDetailsService());
+	    authProvider.setPasswordEncoder(passwordEncoder()); 
+	    return authProvider;
+	}
+	
 	@Bean
 	public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-	/*	http
-		.authorizeHttpRequests(authorize -> authorize
-			.anyRequest().authenticated()
-		)
-		.formLogin()
-		.defaultSuccessUrl("/list")
-;*/
-		http
+	
+	http
 		.authorizeHttpRequests()
-		.requestMatchers("/login").permitAll()
-		.anyRequest().permitAll()
+		.requestMatchers("/login","/register").permitAll()
+		.anyRequest().authenticated()
 		.and()
 		.formLogin()
 		.loginPage("/login")
 		.usernameParameter("email")
-		.defaultSuccessUrl("/list")
+		.defaultSuccessUrl("/add")
 		.and()
 		.logout()
 		.logoutRequestMatcher(new AntPathRequestMatcher("/logout"))
 		.logoutSuccessUrl("/")
 		.permitAll();
-		return http.build();
+	return http.build();
 	}
+
 }
