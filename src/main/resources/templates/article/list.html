@@ -13,10 +13,10 @@
 	
 	<div class="container">
 	
-	 <div class="btn btn-outline-warning" th:if="${articles.isEmpty()}">
+	 <div class="btn btn-outline-warning" th:if="${articles == null}">
 	        Pas d'article
 	    </div>
-    	<div th:if="${!articles.isEmpty()}">
+    	<div th:if="${articles != null}">
         	<table class="table">
 			  <thead>
 			    <tr>

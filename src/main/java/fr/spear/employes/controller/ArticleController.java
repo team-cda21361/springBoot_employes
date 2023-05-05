@@ -19,6 +19,7 @@ import fr.spear.employes.bean.User;
 import fr.spear.employes.bean.UserLogin;
 import fr.spear.employes.service.ArticleService;
 import fr.spear.employes.service.UserService;
+import jakarta.servlet.http.HttpSession;
 
 @Controller
 public class ArticleController {
@@ -38,7 +39,7 @@ public class ArticleController {
 		return "article/ajout";
 	}
 	@PostMapping("/ajout-article")
-	public String ajout(@Validated Article article, BindingResult bindingResult) {
+	public String ajout(@Validated Article article, BindingResult bindingResult, HttpSession session) {
 		
 		if(bindingResult.hasErrors()) {
 			System.err.println(bindingResult.getFieldErrorCount());
@@ -57,6 +58,7 @@ public class ArticleController {
 				
 				article.setUser(user);
 				
+				session.setAttribute("add","L'article "+article.getTitre()+" a bien ajouté");
 				articleService.ajoutArticle(article);
 				
 			}
@@ -89,7 +91,11 @@ public class ArticleController {
 	}
 	
 	@PostMapping("/showArticle/{id}")
-    public String update(@PathVariable(value = "id") int id, @Validated Article articleDetails, BindingResult bindingResult) throws AttributeNotFoundException {
+    public String update(@PathVariable(value = "id") int id, @Validated Article articleDetails, BindingResult bindingResult, HttpSession session) throws AttributeNotFoundException {
+		
+		System.err.println(articleDetails.getTitre());
+		System.err.println(articleDetails.getResume());
+		System.err.println(articleDetails.getContenu());
 		/*
         * La ligne ci-dessous joue un role essentiel. 
         * Il check si l'id, il le reoturne dans la variable sinon il léve une exception
@@ -101,10 +107,13 @@ public class ArticleController {
 		article.setResume(articleDetails.getResume());
 		article.setContenu(articleDetails.getContenu());
 		/*
+		 * TODO
 		 * Rajouter le user
 		 */
 
+		 session.setAttribute("update","L'article "+article.getTitre()+" a bien modifié");
+		articleService.ajoutArticle(article);
         
-        return "redirect:/";
+        return "redirect:/showArticle/"+id;
     }
 }

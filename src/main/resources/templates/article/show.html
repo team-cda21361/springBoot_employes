@@ -20,37 +20,36 @@
 	  <li class="list-group-item"> Auteur: <span th:text="${article.user.prenom}"></span>  </li>
 	</ul>
 	
+	<div class="alert alert-success" th:if="${session.update != null}" th:text="${session.update}"></div>
 	
 	<div sec:authorize="isAuthenticated()">
 			<div th:if="${#authentication.principal.username == article.user.email}"></div>
 		
-		<form method="post" th:object="${article}" th:action="@{/showArticle/}+{article.id}">
+		<form method="post" th:object="${article}" th:action="@{/showArticle/}+${article.id}">
 		  <div class="mb-3">
-		    <label for="exampleInputEmail1" class="form-label">Saisir nom</label>
+		    <label for="exampleInputEmail1" class="form-label">Saisir titre</label>
 		    <input type="text" class="form-control" id="nom" th:field="*{titre}"/>
 		    <!-- Message d'erreur -->
 		    	<div class="alert alert-danger"  th:if="${#fields.hasErrors('titre')}" th:errors="*{titre}"></div>
 		  </div>
 		  <div class="mb-3">
-		    <label for="exampleInputEmail1" class="form-label">Saisir prénom</label>
+		    <label for="exampleInputEmail1" class="form-label">Saisir résumé</label>
 		    <input type="text" class="form-control" id="nom" th:field="*{resume}"/>
 		   
 		    	<div class="alert alert-danger"  th:if="${#fields.hasErrors('resume')}" th:errors="*{resume}"></div>
 		  </div>
 		  <div class="mb-3">
-		    <label for="exampleInputEmail1" class="form-label">Email address</label>
-		    <input type="email" class="form-control" id="nom" th:field="*{contenu}"/>
+		    <label for="exampleInputEmail1" class="form-label">Saisir contenu</label>
+		    <input type="text" class="form-control" id="nom" th:field="*{contenu}"/>
 		    
 		    	<div class="alert alert-danger" th:if="${#fields.hasErrors('contenu')}" th:errors="*{contenu}"></div>
 		    
 		  </div>
+	 	 <button type="submit" class="btn btn-outline-warning">Modifier mon article</button>
 		</form>
-	
+	 
 		
-	  
-	 	 <button type="submit" class="btn btn-outline-warning">Modifier mon compte</button>
-		
-		<a th:href="@{/update}">
+		<a th:href="@{/delete}">
 			<button type="button"  class="btn btn-outline-danger" >Danger</button>	
 		</a>
 	  </div>
