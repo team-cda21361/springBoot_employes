@@ -1,18 +1,23 @@
 package fr.spear.employes.controller;
 
+import java.io.IOException;
 import java.util.Optional;
 
 import javax.management.AttributeNotFoundException;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.ClassPathResource;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.util.StringUtils;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.multipart.MultipartFile;
 
 import fr.spear.employes.bean.Article;
 import fr.spear.employes.bean.User;
@@ -39,7 +44,8 @@ public class ArticleController {
 		return "article/ajout";
 	}
 	@PostMapping("/ajout-article")
-	public String ajout(@Validated Article article, BindingResult bindingResult, HttpSession session) {
+	public String ajout(@Validated Article article, BindingResult bindingResult, HttpSession session,
+			@RequestParam("image") MultipartFile multipartFile) {
 		
 		if(bindingResult.hasErrors()) {
 			System.err.println(bindingResult.getFieldErrorCount());
@@ -49,7 +55,33 @@ public class ArticleController {
 			//On recupere le nom de l'utilisateur connecté
 			String username = ((UserLogin) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getUsername();
 			
-			if(username != null) {
+			if(username != null && !multipartFile.isEmpty()) {
+				/*
+				 * Upload image
+				 */
+				
+				String filename = StringUtils.cleanPath(multipartFile.getOriginalFilename());
+				
+				article.setPhoto(filename);
+				
+				try {
+					 
+					//DESTINATION
+					//String uploadDir = "static/images/" +article.getTitre();
+					String destination = new ClassPathResource("/src/main/resources/static/upload").getPath();
+					
+					articleService.uploadsImage(destination, filename, multipartFile);
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+				
+			}
+				
+				/*
+				 * Upload image
+				 */
+				
 				//Instnacie un nouvel objet avec le mail de user connecté
 				User user = new User();
 				user = userService.getUserByEmail(username);
@@ -64,7 +96,7 @@ public class ArticleController {
 			}
 			return "article/list";
 		}
-	}
+	
 	
 	/*
 	 * LISTING DES ARTICLES
@@ -116,4 +148,15 @@ public class ArticleController {
         
         return "redirect:/showArticle/"+id;
     }
+	
+	
+	@GetMapping("/deleteArticle/{id}")
+	public String supprimer(@PathVariable(value="id") int articleId, HttpSession session) {
+		
+		articleService.deleteArticle(articleId);
+			
+		session.setAttribute("delete","L'article  a bien supprimé");
+		
+		return "redirect:/list";
+	}
 }

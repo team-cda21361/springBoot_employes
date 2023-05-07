@@ -23,7 +23,7 @@
 	<div class="alert alert-success" th:if="${session.update != null}" th:text="${session.update}"></div>
 	
 	<div sec:authorize="isAuthenticated()">
-			<div th:if="${#authentication.principal.username == article.user.email}"></div>
+	   <div th:if="${#authentication.principal.username} == ${article.user.email} or ${#strings.contains(#authentication.principal.authorities, 'ADMIN')}" >
 		
 		<form method="post" th:object="${article}" th:action="@{/showArticle/}+${article.id}">
 		  <div class="mb-3">

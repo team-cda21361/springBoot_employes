@@ -13,48 +13,86 @@
 	
 	<div class="container">
 	
-	 <div class="btn btn-outline-warning" th:if="${articles == null}">
-	        Pas d'article
-	    </div>
-    	<div th:if="${articles != null}">
-        	<table class="table">
-			  <thead>
-			    <tr>
-			      <th scope="col">#</th>
-			      <th scope="col">Titre</th>
-			      <th scope="col">Résumé</th>
-			      <th scope="col">Auteur</th>
-			    </tr>
-			  </thead>
-			  <tbody>
-			    <tr th:each="article:${articles}">
-			      <th scope="row"  th:text="${article.id}"> </td>
-			      <td th:text="${article.titre}"> </td>
-			      <td th:text="${article.resume}"> </td>
-			      <td th:text="${article.user} ? ${article.user.prenom} : 'Inconnu' "> </td>
-			    </tr>
-			    
-			  </tbody>
-			</table>
-			
-			<div class="row row-cols-1 row-cols-md-3 g-4">
-		  <div class="col" th:each="article:${articles}">
-		    <div class="card h-100">
-		      <img src="https://media.tenor.com/ieewTAaFi8YAAAAC/homer-apologize.gif" class="card-img-top" alt="...">
-		      <a class="btn btn-info" th:href="@{/showArticle/{id} (id=${article.id}) }"> 
-		      <div class="card-body">
-		        <h5 class="card-title" th:text="${article.titre}"></h5>
-		        <p class="card-text" th:text="${article.resume}"></p>
-		      </div>
-		      </a>
-		      <div class="card-footer">
-		        <small class="text-body-secondary">Last updated 3 mins ago</small>
-				<button type="button" class="btn btn-danger">Danger</button>
-
-		      </div>
+		<div class="alert alert-success" th:if="${session.delete != null}" th:text="${session.delete}"></div>
+		
+			 <div class="btn btn-outline-warning" th:if="${articles == null}">
+		        Pas d'article
 		    </div>
-		  </div>
-		  
+	    	<div th:if="${articles != null}">
+	        	<!-- 
+	        	<table class="table">
+				  <thead>
+				    <tr>
+				      <th scope="col">#</th>
+				      <th scope="col">Titre</th>
+				      <th scope="col">Résumé</th>
+				      <th scope="col">Auteur</th>
+				    </tr>
+				  </thead>
+				  <tbody>
+				    <tr th:each="article:${articles}">
+				      <th scope="row"  th:text="${article.id}"> </td>
+				      <td th:text="${article.titre}"> </td>
+				      <td th:text="${article.resume}"> </td>
+				      <td th:text="${article.user} ? ${article.user.prenom} : 'Inconnu' "> </td>
+				    </tr>
+				    
+				  </tbody>
+				</table>
+				-->
+				
+				<div class="row row-cols-1 row-cols-md-3 g-4">
+			  <div class="col" th:each="article:${articles}">
+			    <div class="card h-100">
+			      <img src="https://media.tenor.com/ieewTAaFi8YAAAAC/homer-apologize.gif" class="card-img-top" alt="...">
+			      <a class="btn btn-info" th:href="@{/showArticle/{id} (id=${article.id}) }"> 
+			      <div class="card-body">
+			        <h5 class="card-title" th:text="${article.titre}"></h5>
+			        <p class="card-text" th:text="${article.resume}"></p>
+			      </div>
+			      </a>
+			      <div class="card-footer">
+			        <small class="text-body-secondary">Last updated 3 mins ago</small>
+			        <!-- Affichahe des roles -->
+			        <div sec:authentication="principal.authorities"></div>
+			        <!-- Affichahe des roles -->
+			        
+			        <!-- Check si on supprime l'article -->
+			        <div sec:authorize="isAuthenticated()">
+			       
+						<div th:if="${#authentication.principal.username} == ${article.user.email} or ${#strings.contains(#authentication.principal.authorities, 'ADMIN')}" >
+						<button type="button" class="btn btn-danger" data-bs-toggle="modal"
+									th:attr="data-bs-target='#deleteModal'+*{article.id}">Danger</button>
+						</div>
+					</div>
+			        <!-- Fin Check si on supprime l'article -->
+			        
+			      </div>
+			    </div>
+			    
+			    <div class="modal fade" th:id="*{'deleteModal'+{article.id}}" tabindex="-1" aria-labelledby="deleteModal" aria-hidden="true">
+						<div class="modal-dialog">
+							<div class="modal-content">
+								<div class="modal-header">
+									<h5 class="modal-title">Suppression d'article</h5>
+									<button type="button" class="btn-close" data-bs-dismiss="modal"
+										aria-label="Close"></button>
+								</div>
+								<div class="modal-body">
+									<p>Etes vous sur de vouloir supprimer l'employe <b th:text=" ${article.titre}"></b> ?</p>
+								</div>
+								<div class="modal-footer">
+									<button type="button" class="btn btn-info"
+										data-bs-dismiss="modal">Non</button>
+									<a th:href="@{/deleteArticle/{id} (id=${article.id}) }">
+										<button type="button" class="btn btn-danger">Supprimer</button>
+									</a>
+								</div>
+							</div>
+						</div>
+					</div>
+					
+			  </div>
 		</div>
 	</div>
 
