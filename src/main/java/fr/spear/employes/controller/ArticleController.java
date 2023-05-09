@@ -1,6 +1,7 @@
 package fr.spear.employes.controller;
 
 import java.io.IOException;
+import java.util.List;
 import java.util.Optional;
 
 import javax.management.AttributeNotFoundException;
@@ -20,9 +21,11 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 
 import fr.spear.employes.bean.Article;
+import fr.spear.employes.bean.Commentaire;
 import fr.spear.employes.bean.User;
 import fr.spear.employes.bean.UserLogin;
 import fr.spear.employes.service.ArticleService;
+import fr.spear.employes.service.CommentService;
 import fr.spear.employes.service.UserService;
 import jakarta.servlet.http.HttpSession;
 
@@ -34,6 +37,9 @@ public class ArticleController {
 	
 	@Autowired
 	private UserService userService;
+	
+	@Autowired
+	private CommentService commentServ;
 	
 	/*
 	 * AJOUT ARTICLE
@@ -119,32 +125,53 @@ public class ArticleController {
         	
         	model.addAttribute("article",article.get());
         }
+        
+        List<Commentaire> comments = commentServ.findAll(id);
+
+        model.addAttribute("comments", comments);
+        
 		return "/article/show";
 	}
 	
 	@PostMapping("/showArticle/{id}")
-    public String update(@PathVariable(value = "id") int id, @Validated Article articleDetails, BindingResult bindingResult, HttpSession session) throws AttributeNotFoundException {
+    public String update(@PathVariable(value = "id") int id, @Validated Article articleDetails, BindingResult bindingResult, 
+    		HttpSession session, @Validated Commentaire comment) throws AttributeNotFoundException {
 		
 		System.err.println(articleDetails.getTitre());
 		System.err.println(articleDetails.getResume());
 		System.err.println(articleDetails.getContenu());
-		/*
-        * La ligne ci-dessous joue un role essentiel. 
-        * Il check si l'id, il le reoturne dans la variable sinon il léve une exception
-        */
-		Article article = articleService.getArticle(id)
-       .orElseThrow(() -> new AttributeNotFoundException("Aucun article trouvé avec l'id :: " + id));
+		
+		//On recupere le nom de l'utilisateur connecté
+		String username = ((UserLogin) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getUsername();
+		
+		if(username != null && (comment.getContent() != null) ){
+				//Instnacie un nouvel objet avec le mail de user connecté
+				User user = new User();
+				user = userService.getUserByEmail(username);
+			comment.setUser(user);
+			comment.setArticle(comment.getArticle());
+			
+			commentServ.createComment(comment);
+		} else {
+			/*
+			 * La ligne ci-dessous joue un role essentiel. 
+			 * Il check si l'id, il le reoturne dans la variable sinon il léve une exception
+			 */
+			Article article = articleService.getArticle(id)
+					.orElseThrow(() -> new AttributeNotFoundException("Aucun article trouvé avec l'id :: " + id));
+			
+			article.setTitre(articleDetails.getTitre());
+			article.setResume(articleDetails.getResume());
+			article.setContenu(articleDetails.getContenu());
+			/*
+			 * TODO
+			 * Rajouter le user
+			 */
+			
+			session.setAttribute("update","L'article "+article.getTitre()+" a bien modifié");
+			articleService.ajoutArticle(article);
 
-		article.setTitre(articleDetails.getTitre());
-		article.setResume(articleDetails.getResume());
-		article.setContenu(articleDetails.getContenu());
-		/*
-		 * TODO
-		 * Rajouter le user
-		 */
-
-		 session.setAttribute("update","L'article "+article.getTitre()+" a bien modifié");
-		articleService.ajoutArticle(article);
+		}
         
         return "redirect:/showArticle/"+id;
     }

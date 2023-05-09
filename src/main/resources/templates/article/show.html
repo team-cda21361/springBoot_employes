@@ -55,5 +55,28 @@
 	  </div>
 		
 	</div>
+	
+	<hr>
+	   	<h5>Liste des commentaires</h5>
+	   	<div th:each="comment:${comments}">
+	   	<p> Posté par: <span th:text="${comment.user.prenom}"></span> </p>
+	   	<p th:text="${comment.content}">
+	   	</p>
+   	<hr>
+   	</div>
+   	
+   	<!-- Check si on supprime l'article -->
+     <div sec:authorize="isAuthenticated()">
+   	
+		   	<form method="post" th:action="@{/showArticle/}+${article.id}" th:object="${comment}" >
+		   	
+		   	<input type="hidden" name="article" th:value="${article.id}" />
+			  <div class="form-floating">
+			  <textarea class="form-control" name="content" placeholder="Leave a comment here" id="floatingTextarea"></textarea>
+			  <label for="floatingTextarea">Comments</label>
+			</div>
+		  <button type="submit" class="btn btn-primary">Je commente</button>
+		</form>
+     </div>
 </body>
 </html>
